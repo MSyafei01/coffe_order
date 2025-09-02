@@ -1,12 +1,18 @@
-// Modul untuk menghitung total harga
-export function calculateTotal(coffee, quantity) {
-const prices = {
-    "Espresso": 25000,
-    "Latte": 25000,
-    "Cappuccino": 23000,
-    "Americano": 18000,
-    "Water Ice": 5000
-    };
+// Daftar harga kopi berdasarkan jenis dan ukuran
+// Hitung total harga untuk 1 jenis kopi
+export function calculateTotal(coffee, size, quantity, coffeePrices) {
+  return coffeePrices[coffee][size] * quantity;
+}
 
-  return prices[coffee] * quantity;
+// Hitung dengan pajak
+export function applyTax(amount, taxRate) {
+  return amount + amount * taxRate;
+}
+
+// Hitung diskon kalau jumlah pesanan banyak
+export function applyDiscount(amount, quantity, discountThreshold) {
+if (quantity >= discountThreshold) {
+    return amount * 0.9; // diskon 10%
+}
+return amount;
 }
