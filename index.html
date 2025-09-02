@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="model.css">
+    <title>Cafe Baqi</title>
+</head>
+<body>
+    <div class="container">
+    <h1>Pemesanan Kopi</h1>
+    <form id="coffeeForm">
+    <label for="name">Nama:</label>
+    <input type="text" id="name" required>
+
+    <label for="coffee">Pilih Kopi:</label>
+    <select id="coffee">
+        <option value="Espresso">Espresso - Rp 20.000</option>
+        <option value="Latte">Latte - Rp 25.000</option>
+        <option value="Cappuccino">Cappuccino - Rp 23.000</option>
+        <option value="Americano">Americano - Rp 18.000</option>
+    </select>
+
+    <label for="quantity">Jumlah:</label>
+    <input type="number" id="quantity" value="1" min="1">
+
+    <button type="submit">Pesan</button>
+    </form>
+
+    <div id="orderSummary"></div>
+</div>
+
+<!-- Import modul utama -->
+    <script type="module" src="app.mjs"></script>
+</body>
+</html>
