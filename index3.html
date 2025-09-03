@@ -2,147 +2,220 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kalkulator Pesanan Kopi</title>
+  <title>KopiKu - Pemesanan Online</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f9;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    select, input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #45a049;
-    }
-    .summary {
-      margin-top: 30px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background: #fafafa;
-    }
-    .summary h2 {
-      margin: 0 0 10px 0;
-      color: #444;
-    }
-    .summary p {
-      margin: 5px 0;
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #receipt, #receipt * {
+        visibility: visible;
+      }
+      #receipt {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
     }
   </style>
 </head>
-<body>
-  <h1>Kalkulator Pesanan Kopi</h1>
-  <div class="container">
-    <label for="coffee">Pilih Kopi:</label>
-    <select id="coffee">
-      <option value="espresso">Espresso</option>
-      <option value="latte">Latte</option>
-      <option value="cappuccino">Cappuccino</option>
-      <option value="americano">Americano</option>
-    </select>
+<body class="bg-gradient-to-br from-amber-50 to-yellow-100 min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8">
+    <h1 class="text-3xl font-bold text-center text-amber-800 mb-6">☕ Pemesanan Kopi Modern</h1>
 
-    <label for="size">Ukuran:</label>
-    <select id="size">
-      <option value="small">Small</option>
-      <option value="medium">Medium</option>
-      <option value="large">Large</option>
-    </select>
+    <!-- Form -->
+    <form id="orderForm" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Pilih kopi -->
+      <div>
+        <label class="block mb-2 font-semibold">Pilih Kopi</label>
+        <select id="coffee" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-amber-500">
+          <option value="espresso">Espresso</option>
+          <option value="latte">Latte</option>
+          <option value="cappuccino">Cappuccino</option>
+          <option value="americano">Americano</option>
+        </select>
+      </div>
 
-    <label for="quantity">Jumlah:</label>
-    <input type="number" id="quantity" min="1" value="1">
+      <!-- Pilih ukuran -->
+      <div>
+        <label class="block mb-2 font-semibold">Ukuran</label>
+        <select id="size" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-amber-500">
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+        </select>
+      </div>
 
-    <button id="orderBtn">Hitung Pesanan</button>
+      <!-- Harga realtime -->
+      <div>
+        <label class="block mb-2 font-semibold">Harga Satuan</label>
+        <input type="text" id="unitPrice" readonly class="w-full p-3 border rounded-lg bg-gray-100 text-gray-700 font-semibold">
+      </div>
 
-    <div class="summary" id="summary">
-      <h2>Ringkasan Pesanan</h2>
-      <p id="orderDetail">Belum ada pesanan</p>
-      <p id="subtotal">Subtotal: Rp 0</p>
-      <p id="discount">Diskon: Rp 0</p>
-      <p id="tax">Pajak (10%): Rp 0</p>
-      <p id="total"><strong>Total: Rp 0</strong></p>
+      <!-- Jumlah -->
+      <div>
+        <label class="block mb-2 font-semibold">Jumlah</label>
+        <input type="number" id="quantity" value="1" min="1" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-amber-500">
+      </div>
+
+      <!-- Tombol -->
+      <div class="md:col-span-4">
+        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-lg shadow">
+          Tambah Pesanan
+        </button>
+      </div>
+    </form>
+
+    <!-- Ringkasan -->
+    <div class="mt-8">
+      <h2 class="text-2xl font-bold mb-4 text-amber-800">📋 Ringkasan Pesanan</h2>
+      <table class="w-full text-left border border-gray-200 rounded-lg overflow-hidden">
+        <thead class="bg-amber-100">
+          <tr>
+            <th class="p-3">Produk</th>
+            <th class="p-3">Ukuran</th>
+            <th class="p-3">Jumlah</th>
+            <th class="p-3">Harga</th>
+          </tr>
+        </thead>
+        <tbody id="orderSummary"></tbody>
+      </table>
+      <p id="totalPrice" class="mt-4 text-xl font-bold text-amber-900">Total: Rp 0</p>
+      <button onclick="printReceipt()" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg shadow">
+        🖨️ Cetak Struk
+      </button>
     </div>
   </div>
 
-  <script>
-    // Data harga kopi
+  <!-- STRUK CETAK -->
+  <div id="receipt" class="hidden p-6 text-gray-800">
+    <h2 class="text-center text-2xl font-bold mb-4">KopiKu</h2>
+    <p class="text-center mb-2">Jl. Kopi No. 123, Jember</p>
+    <hr class="mb-4">
+    <table class="w-full text-sm mb-4">
+      <thead>
+        <tr>
+          <th class="text-left">Produk</th>
+          <th class="text-left">Ukuran</th>
+          <th class="text-right">Jumlah</th>
+          <th class="text-right">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody id="receiptBody"></tbody>
+    </table>
+    <hr class="mb-2">
+    <p id="receiptTotal" class="font-bold text-right"></p>
+    <p class="text-center mt-6 text-xs">Terima kasih atas kunjungan Anda ☕</p>
+  </div>
+
+  <!-- Script -->
+  <script type="module">
     const coffeePrices = {
       espresso: { small: 15000, medium: 20000, large: 25000 },
       latte: { small: 18000, medium: 23000, large: 28000 },
       cappuccino: { small: 20000, medium: 25000, large: 30000 },
       americano: { small: 12000, medium: 17000, large: 22000 }
     };
-    const taxRate = 0.1; // 10% pajak
-    const discountThreshold = 5; // diskon jika jumlah > 5
-    const discountRate = 0.1; // 10% diskon
+    const taxRate = 0.1; 
+    const discountThreshold = 5;
 
-    document.getElementById("orderBtn").addEventListener("click", () => {
-      const coffee = document.getElementById("coffee").value;
-      const size = document.getElementById("size").value;
-      const quantity = parseInt(document.getElementById("quantity").value);
+    const coffeeEl = document.getElementById('coffee');
+    const sizeEl = document.getElementById('size');
+    const unitPriceEl = document.getElementById('unitPrice');
+    const form = document.getElementById('orderForm');
+    const orderSummary = document.getElementById('orderSummary');
+    const totalPriceElement = document.getElementById('totalPrice');
 
-      if (!coffee || !size || isNaN(quantity) || quantity <= 0) {
-        alert("Mohon lengkapi pesanan dengan benar.");
-        return;
-      }
+    let orders = [];
 
-      const pricePerCup = coffeePrices[coffee][size];
-      let subtotal = pricePerCup * quantity;
+    function updateUnitPrice() {
+      const coffee = coffeeEl.value;
+      const size = sizeEl.value;
+      const price = coffeePrices[coffee][size];
+      unitPriceEl.value = `Rp ${price.toLocaleString()}`;
+    }
+
+    function updateSummary() {
+      orderSummary.innerHTML = '';
+      let subtotal = 0;
+
+      orders.forEach(order => {
+        const itemTotal = coffeePrices[order.coffee][order.size] * order.quantity;
+        subtotal += itemTotal;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-2">${capitalize(order.coffee)}</td>
+          <td class="p-2">${order.size}</td>
+          <td class="p-2 text-right">${order.quantity}</td>
+          <td class="p-2 text-right">Rp ${itemTotal.toLocaleString()}</td>
+        `;
+        orderSummary.appendChild(tr);
+      });
+
       let discount = 0;
+      const totalItems = orders.reduce((sum, o) => sum + o.quantity, 0);
+      if (totalItems > discountThreshold) discount = subtotal * 0.1;
 
-      if (quantity > discountThreshold) {
-        discount = subtotal * discountRate;
-      }
+      const tax = (subtotal - discount) * taxRate;
+      const total = subtotal - discount + tax;
 
-      let taxedAmount = (subtotal - discount) * taxRate;
-      let total = subtotal - discount + taxedAmount;
+      totalPriceElement.textContent = `Total: Rp ${total.toLocaleString()}`;
+    }
 
-      // Update ringkasan
-      document.getElementById("orderDetail").textContent =
-        `${quantity}x ${coffee} (${size}) - Rp ${pricePerCup.toLocaleString()}/cup`;
-      document.getElementById("subtotal").textContent = 
-        `Subtotal: Rp ${subtotal.toLocaleString()}`;
-      document.getElementById("discount").textContent = 
-        `Diskon: Rp ${discount.toLocaleString()}`;
-      document.getElementById("tax").textContent = 
-        `Pajak (10%): Rp ${taxedAmount.toLocaleString()}`;
-      document.getElementById("total").innerHTML = 
-        `<strong>Total: Rp ${total.toLocaleString()}</strong>`;
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const coffee = coffeeEl.value;
+      const size = sizeEl.value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+
+      orders.push({ coffee, size, quantity });
+      updateSummary();
+      form.reset();
+      updateUnitPrice(); // biar harga realtime balik ke default
     });
+
+    coffeeEl.addEventListener('change', updateUnitPrice);
+    sizeEl.addEventListener('change', updateUnitPrice);
+
+    updateUnitPrice(); // harga pertama kali muncul
+
+    window.printReceipt = function () {
+      const receiptBody = document.getElementById('receiptBody');
+      receiptBody.innerHTML = '';
+      let subtotal = 0;
+
+      orders.forEach(order => {
+        const itemTotal = coffeePrices[order.coffee][order.size] * order.quantity;
+        subtotal += itemTotal;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${capitalize(order.coffee)}</td>
+          <td>${order.size}</td>
+          <td class="text-right">${order.quantity}</td>
+          <td class="text-right">Rp ${itemTotal.toLocaleString()}</td>
+        `;
+        receiptBody.appendChild(tr);
+      });
+
+      let discount = 0;
+      const totalItems = orders.reduce((sum, o) => sum + o.quantity, 0);
+      if (totalItems > discountThreshold) discount = subtotal * 0.1;
+      const tax = (subtotal - discount) * taxRate;
+      const total = subtotal - discount + tax;
+
+      document.getElementById('receiptTotal').textContent = `Total: Rp ${total.toLocaleString()}`;
+
+      document.getElementById('receipt').classList.remove('hidden');
+      window.print();
+      document.getElementById('receipt').classList.add('hidden');
+    }
   </script>
 </body>
 </html>
