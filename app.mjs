@@ -11,29 +11,29 @@ const totalPriceEl = document.getElementById('totalPrice');
 
 // Tambahkan pesanan ke daftar
 addOrderBtn.addEventListener('click', () => {
-  const coffee = coffeeSelect.value;
-  const size = sizeSelect.value;
-  const quantity = parseInt(quantityInput.value);
+    const coffee = coffeeSelect.value;
+    const size = sizeSelect.value;
+    const quantity = parseInt(quantityInput.value);
 
-  if (!coffee || !size || quantity < 1) {
+if (!coffee || !size || quantity < 1) {
     alert("Mohon lengkapi pesanan dengan benar.");
     return;
-  }
+}
 
-  const subtotal = calculateSubtotal(coffee, size, quantity);
+const subtotal = calculateSubtotal(coffee, size, quantity);
 
   // Tambahkan pesanan ke array
-  orders.push({ coffee, size, quantity, subtotal });
+orders.push({ coffee, size, quantity, subtotal });
 
   // Update UI ringkasan
-  renderOrders();
+renderOrders();
 });
 
 // Render daftar pesanan
 function renderOrders() {
-  orderList.innerHTML = "";
+orderList.innerHTML = "";
 
-  orders.forEach((order, index) => {
+orders.forEach((order, index) => {
     const li = document.createElement('li');
     li.textContent = `${order.quantity}x ${capitalize(order.coffee)} (${capitalize(order.size)}) - ${formatCurrency(order.subtotal)}`;
 
@@ -41,20 +41,20 @@ function renderOrders() {
     const removeBtn = document.createElement('button');
     removeBtn.textContent = "❌";
     removeBtn.onclick = () => {
-      orders.splice(index, 1);
-      renderOrders();
+    orders.splice(index, 1);
+    renderOrders();
     };
 
     li.appendChild(removeBtn);
     orderList.appendChild(li);
-  });
+});
 
   // Hitung total
-  const total = calculateTotal(orders);
-  totalPriceEl.textContent = `Total: ${formatCurrency(total)}`;
+const total = calculateTotal(orders);
+totalPriceEl.textContent = `Total: ${formatCurrency(total)}`;
 }
 
 // Helper kapitalisasi huruf pertama
 function capitalize(word) {
-  return word.charAt(0).toUpperCase() + word.slice(1);
+    return word.charAt(0).toUpperCase() + word.slice(1);
 }

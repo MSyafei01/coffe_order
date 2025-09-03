@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Pesanan Kopi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    select, input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .summary {
+      margin-top: 30px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .summary h2 {
+      margin: 0 0 10px 0;
+      color: #444;
+    }
+    .summary p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Kalkulator Pesanan Kopi</h1>
+  <div class="container">
+    <label for="coffee">Pilih Kopi:</label>
+    <select id="coffee">
+      <option value="espresso">Espresso</option>
+      <option value="latte">Latte</option>
+      <option value="cappuccino">Cappuccino</option>
+      <option value="americano">Americano</option>
+    </select>
+
+    <label for="size">Ukuran:</label>
+    <select id="size">
+      <option value="small">Small</option>
+      <option value="medium">Medium</option>
+      <option value="large">Large</option>
+    </select>
+
+    <label for="quantity">Jumlah:</label>
+    <input type="number" id="quantity" min="1" value="1">
+
+    <button id="orderBtn">Hitung Pesanan</button>
+
+    <div class="summary" id="summary">
+      <h2>Ringkasan Pesanan</h2>
+      <p id="orderDetail">Belum ada pesanan</p>
+      <p id="subtotal">Subtotal: Rp 0</p>
+      <p id="discount">Diskon: Rp 0</p>
+      <p id="tax">Pajak (10%): Rp 0</p>
+      <p id="total"><strong>Total: Rp 0</strong></p>
+    </div>
+  </div>
+
+  <script>
+    // Data harga kopi
+    const coffeePrices = {
+      espresso: { small: 15000, medium: 20000, large: 25000 },
+      latte: { small: 18000, medium: 23000, large: 28000 },
+      cappuccino: { small: 20000, medium: 25000, large: 30000 },
+      americano: { small: 12000, medium: 17000, large: 22000 }
+    };
+    const taxRate = 0.1; // 10% pajak
+    const discountThreshold = 5; // diskon jika jumlah > 5
+    const discountRate = 0.1; // 10% diskon
+
+    document.getElementById("orderBtn").addEventListener("click", () => {
+      const coffee = document.getElementById("coffee").value;
+      const size = document.getElementById("size").value;
+      const quantity = parseInt(document.getElementById("quantity").value);
+
+      if (!coffee || !size || isNaN(quantity) || quantity <= 0) {
+        alert("Mohon lengkapi pesanan dengan benar.");
+        return;
+      }
+
+      const pricePerCup = coffeePrices[coffee][size];
+      let subtotal = pricePerCup * quantity;
+      let discount = 0;
+
+      if (quantity > discountThreshold) {
+        discount = subtotal * discountRate;
+      }
+
+      let taxedAmount = (subtotal - discount) * taxRate;
+      let total = subtotal - discount + taxedAmount;
+
+      // Update ringkasan
+      document.getElementById("orderDetail").textContent =
+        `${quantity}x ${coffee} (${size}) - Rp ${pricePerCup.toLocaleString()}/cup`;
+      document.getElementById("subtotal").textContent = 
+        `Subtotal: Rp ${subtotal.toLocaleString()}`;
+      document.getElementById("discount").textContent = 
+        `Diskon: Rp ${discount.toLocaleString()}`;
+      document.getElementById("tax").textContent = 
+        `Pajak (10%): Rp ${taxedAmount.toLocaleString()}`;
+      document.getElementById("total").innerHTML = 
+        `<strong>Total: Rp ${total.toLocaleString()}</strong>`;
+    });
+  </script>
+</body>
+</html>
